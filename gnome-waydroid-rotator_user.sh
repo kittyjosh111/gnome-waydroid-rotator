@@ -33,6 +33,8 @@ debug_mode=1
 ## DO NOT MODIFY BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING ##
 ######################################################################
 
+
+
 ## define a function that returns True when we can grep, False otherwise
 grep_check () {
   if [ ! -z "$(echo "$1" | grep "$2")" ]; then
@@ -147,6 +149,7 @@ echo "Watching gdbus for focused window changes..."
 (
 gdbus monitor --session --dest org.gnome.Shell | while read -r line; do
   if grep_check "$line" "WindowFocusChanged"; then
+    #echo "- Focus changed."
     if grep_check "$line" "'Waydroid'"; then
       if [[ $debug_mode == 1 ]]; then
         echo "- gdbus reports Waydroid focused."
