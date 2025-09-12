@@ -100,14 +100,18 @@ rot_map () {
     fi
     gdrot="false"
   fi
-  #then we determine waydroid logic
-  if [ "$gdrot" != "false" ]; then
-    if waydroid_check; then
-      gdctl set -LpM "$gdmon" -s $gdscale -t "normal" #force normal orientation if waydroid focused
-      waydroid_rotate $wayrot
-    else
-      gdctl set -LpM "$gdmon" -s $gdscale -t $gdrot
+  #then we determine rotation logic
+  if [ ! -f "/tmp/gnome-waydroid-rotator.lock" ]; then
+    if [ "$gdrot" != "false" ]; then
+      if waydroid_check; then
+        gdctl set -LpM "$gdmon" -s $gdscale -t "normal" #force normal orientation if waydroid focused
+        waydroid_rotate $wayrot
+      else
+        gdctl set -LpM "$gdmon" -s $gdscale -t $gdrot
+      fi
     fi
+  else
+    echo "- Rotation is locked."
   fi
 }
 
