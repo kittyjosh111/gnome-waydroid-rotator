@@ -70,38 +70,38 @@ waydroid_rotate () {
 
 ## and a function that maps the DEVICE rotation to WAYDROID rotation
 rot_map () {
-  if grep_check "$1" "$device_landscape_normal"; then
-    if [[ $debug_mode == 1 ]]; then
-      echo "- Device in LANDSCAPE NORMAL orientation."
-    fi
-    gdrot="normal"
-    wayrot=$normal
-  elif grep_check "$1" "$device_left_portrait"; then
-    if [[ $debug_mode == 1 ]]; then
-      echo "- Device in LEFT PORTRAIT orientation."
-    fi
-    gdrot="90"
-    wayrot=$left_up
-  elif grep_check "$1" "$device_landscape_flipped"; then
-    if [[ $debug_mode == 1 ]]; then
-      echo "- Device in LANDSCAPE FLIPPED orientation."
-    fi
-    gdrot="180"
-    wayrot=$flipped
-  elif grep_check "$1" "$device_right_portrait"; then
-    if [[ $debug_mode == 1 ]]; then
-      echo "- Device in RIGHT PORTRAIT orientation."
-    fi
-    gdrot="270"
-    wayrot=$right_up
-  else
-    if [[ $debug_mode == 1 ]]; then
-      echo "- Edge case reached in rot_map."
-    fi
-    gdrot="false"
-  fi
-  #then we determine rotation logic
   if [ ! -f "/tmp/gnome-waydroid-rotator.lock" ]; then
+    if grep_check "$1" "$device_landscape_normal"; then
+      if [[ $debug_mode == 1 ]]; then
+        echo "- Device in LANDSCAPE NORMAL orientation."
+      fi
+      gdrot="normal"
+      wayrot=$normal
+    elif grep_check "$1" "$device_left_portrait"; then
+      if [[ $debug_mode == 1 ]]; then
+        echo "- Device in LEFT PORTRAIT orientation."
+      fi
+      gdrot="90"
+      wayrot=$left_up
+    elif grep_check "$1" "$device_landscape_flipped"; then
+      if [[ $debug_mode == 1 ]]; then
+        echo "- Device in LANDSCAPE FLIPPED orientation."
+      fi
+      gdrot="180"
+      wayrot=$flipped
+    elif grep_check "$1" "$device_right_portrait"; then
+      if [[ $debug_mode == 1 ]]; then
+        echo "- Device in RIGHT PORTRAIT orientation."
+      fi
+      gdrot="270"
+      wayrot=$right_up
+    else
+      if [[ $debug_mode == 1 ]]; then
+        echo "- Edge case reached in rot_map."
+      fi
+      gdrot="false"
+    fi
+    #then we determine rotation logic
     if [ "$gdrot" != "false" ]; then
       if waydroid_check; then
         gdctl set -LpM "$gdmon" -s $gdscale -t "normal" #force normal orientation if waydroid focused
@@ -111,7 +111,9 @@ rot_map () {
       fi
     fi
   else
-    echo "- Rotation is locked."
+    if [[ $debug_mode == 1 ]]; then
+      echo "- Rotation is locked."
+    fi
   fi
 }
 
