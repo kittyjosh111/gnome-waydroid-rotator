@@ -151,6 +151,7 @@ echo "Watching gdbus for focused window changes..."
 
 ## gdbus tells us what comes into focused
 (
+way_last=false #have a way to toggle between the rotation types
 gdbus monitor --session --dest org.gnome.Shell | while read -r line; do
   if grep_check "$line" "WindowFocusChanged"; then
     #echo "- Focus changed."
@@ -158,9 +159,15 @@ gdbus monitor --session --dest org.gnome.Shell | while read -r line; do
       if [[ $debug_mode == 1 ]]; then
         echo "  - gdbus reports Waydroid focused."
       fi
+      way_last=true
       this_rot="$(cat /tmp/gnome-waydroid-rotator_rotation.tmp | grep 'orientation changed:' | tail -n1)"
       rot_map "$this_rot"
       rot_map "$this_rot" #second time triggers waydroid rotation
+    else
+      if $way_last; then
+        rot_map "$(cat /tmp/gnome-waydroid-rotator_rotation.tmp | grep 'orientation changed:' | tail -n1)"
+      fi
+      way_last=false
     fi
   fi
 done
