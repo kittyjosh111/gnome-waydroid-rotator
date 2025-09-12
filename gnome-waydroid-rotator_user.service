@@ -1,0 +1,8 @@
+[Unit]
+Description=launcher for gnome-waydroid-rotator_user (user portion)
+[Service]
+Type=simple  
+ExecStart=/usr/local/bin/gnome-waydroid-rotator_user.sh
+Restart=on-failure
+[Install]
+WantedBy=default.target

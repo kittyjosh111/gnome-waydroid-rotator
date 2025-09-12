@@ -14,6 +14,8 @@
 
 6) Move ```gnome-waydroid-rotator_root.service``` to /etc/systemd/system/. Enable and start it with systemctl via ```systemctl enable --now gnom-waydroid-rotator_root```.
 
+7) Move ```gnome-waydroid-rotator_user.service``` to ~/.config/systemd/user/. Enable and start it with systemctl via ```systemctl --user enable --now gnom-waydroid-rotator_user```.
+
 **This script was only tested on Wayland GNOME**
 
 ## setup:
