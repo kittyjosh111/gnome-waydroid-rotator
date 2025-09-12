@@ -33,7 +33,11 @@ debug_mode=1
 ## DO NOT MODIFY BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING ##
 ######################################################################
 
-
+## prevent root
+if [ "$(id -u)" == "0" ]; then
+   echo "This script can not be run as root!" 1>&2
+   exit 1
+fi
 
 ## define a function that returns True when we can grep, False otherwise
 grep_check () {
@@ -48,12 +52,12 @@ waydroid_check () {
   focus_win="$(gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell/Extensions/WindowMonitorPro --method org.gnome.Shell.Extensions.WindowMonitorPro.FocusTitle)"
   if grep_check "$focus_win" "'Waydroid'"; then
     if [[ $debug_mode == 1 ]]; then
-      echo "- Waydroid is focused."
+      echo "  - Waydroid is focused."
     fi
     return 0
   else
     if [[ $debug_mode == 1 ]]; then
-      echo "- Waydroid is not focused."
+      echo "  - Waydroid is not focused."
     fi
     return 1
   fi
@@ -91,6 +95,9 @@ rot_map () {
     gdrot="270"
     wayrot=$right_up
   else
+    if [[ $debug_mode == 1 ]]; then
+      echo "- Edge case reached in rot_map."
+    fi
     gdrot="false"
   fi
   #then we determine waydroid logic
@@ -106,15 +113,12 @@ rot_map () {
 
 ## start running rotation logging
 rm /tmp/gnome-waydroid-rotator_rotation.tmp || true #clear the rotation stuff
-#rm /tmp/gnome-waydroid-rotator_waydroid.tmp || true #clear our waydroid trackers
 
 ## pre-run checks
 echo "Starting prerun checks..."
-monitor-sensor --accel > /tmp/gnome-waydroid-rotator_rotation.tmp 2>&1 &
+#monitor-sensor --accel > /tmp/gnome-waydroid-rotator_rotation.tmp 2>&1 &
+monitor-sensor --accel | grep --line-buffered "orientation" > /tmp/gnome-waydroid-rotator_rotation.tmp 2>&1 &
 echo "- Monitoring rotation status via monitor-sensor..."
-
-#gdbus monitor --session --dest org.gnome.Shell > /tmp/gnome-waydroid-rotator_waydroid.tmp 2>&1 &
-#echo "- Monitoring focused window via gdbus and Window Monitor Pro..."
 sleep 2 #let files populate
 
 ## and now, we check the initial rotation. We only start the script if we are in "NORMAL"
@@ -139,7 +143,7 @@ echo "Prerun checklist complete. We are ready to rotate."
 echo "Main loop started in background..."
 (
   inotifywait --monitor --format "%e %w%f" --event modify,create /tmp/gnome-waydroid-rotator_rotation.tmp | while read changed; do
-    rot_map "$(tail -n 1 /tmp/gnome-waydroid-rotator_rotation.tmp | grep 'orientation changed:')"
+    rot_map "$(cat /tmp/gnome-waydroid-rotator_rotation.tmp | grep 'orientation changed:' | tail -n1)"
   done
 ) 2>&1 &
 
@@ -152,10 +156,11 @@ gdbus monitor --session --dest org.gnome.Shell | while read -r line; do
     #echo "- Focus changed."
     if grep_check "$line" "'Waydroid'"; then
       if [[ $debug_mode == 1 ]]; then
-        echo "- gdbus reports Waydroid focused."
+        echo "  - gdbus reports Waydroid focused."
       fi
-      rot_map "$(tail -n 1 /tmp/gnome-waydroid-rotator_rotation.tmp | grep 'orientation changed:')"
-      rot_map "$(tail -n 1 /tmp/gnome-waydroid-rotator_rotation.tmp | grep 'orientation changed:')" #second time triggers waydroid rotation
+      this_rot="$(cat /tmp/gnome-waydroid-rotator_rotation.tmp | grep 'orientation changed:' | tail -n1)"
+      rot_map "$this_rot"
+      rot_map "$this_rot" #second time triggers waydroid rotation
     fi
   fi
 done
