@@ -1,0 +1,10 @@
+[Unit]
+Description=Restart user portion after resume
+After=suspend.target
+
+[Service]
+Type=simple
+ExecStart=systemctl --user --no-block restart gnome-waydroid-rotator_user.service
+
+[Install]
+WantedBy=suspend.target
