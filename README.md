@@ -32,7 +32,9 @@ The base two scripts for rotation do not rely on systemd to function. Thus, it s
 
 2) If you want to run the scripts without systemd, disable the services. Then, run ```gnome-waydroid-rotator_root.sh``` **as root**, and ```gnome-waydroid-rotator_user.sh``` **as user**.
 
-3) To lock rotation, create a file ```/tmp/gnome-waydroid-rotator.lock```. To disable rotation lock, remove that file.
+3) To lock rotation, create a file ```/tmp/gwr/lock```. To disable rotation lock, remove that file.
+
+4) To enable manual rotation, first lock the rotation as above, then create a file ```/tmp/gwr/manual``` with the content of which orientation you want to manually switch to. Accepted values are the ones you set up on step 5 of the installation
 
 ## background:
 
