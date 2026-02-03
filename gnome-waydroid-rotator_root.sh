@@ -6,15 +6,17 @@
 ## Polling is expensive. Let us use inotify.
 ## also, we don't do any checking lmao xd
 
-if [ ! -f "/tmp/gwr/tell_root" ]; then
-  echo "/tmp/gwr/tell_root not found. Waiting..."
-  inotifywait --monitor --format '%f' --event modify,create /tmp/gwr/ | while read -r filename; do
-    if [ "$filename" == "tell_root" ]; then
-      echo "/tmp/gwr/tell_root found! Restarting service..."
-      systemctl restart gnome-waydroid-rotator_root
-    fi
-  done
-fi
+first_message=true
+
+until [ -s "/tmp/gwr/tell_root" ]; do
+  if [ $first_message == true ]; then
+    echo "/tmp/gwr/tell_root (bridge to user portion) not found. Waiting..."
+    first_message=false
+  fi
+  sleep 1
+done
+
+echo "Starting main root loop..."
 
 inotifywait --monitor --format "%e %w%f" --event modify,create /tmp/gwr/tell_root | while read changed; do
   rot_value=$(cat /tmp/gwr/tell_root)
