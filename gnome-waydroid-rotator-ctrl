@@ -56,25 +56,25 @@ clock_turn () {
     current_o="$(cat /tmp/gwr/device_rotation | grep 'orientation:' | tail -n1)" 2> /dev/null
   fi
   if grep_check "$current_o" "$device_landscape_normal"; then
-    if [ "$request_t" == "clockwise" ]; then
+    if [ "$request_t" != "clockwise" ]; then
       set_left_up
     else
       set_right_up
     fi
   elif grep_check "$current_o" "$device_left_portrait"; then
-    if [ "$request_t" == "clockwise" ]; then
+    if [ "$request_t" != "clockwise" ]; then
       set_flipped
     else
       set_normal
     fi
   elif grep_check "$current_o" "$device_landscape_flipped"; then
-    if [ "$request_t" == "clockwise" ]; then
+    if [ "$request_t" != "clockwise" ]; then
       set_right_up
     else
       set_left_up
     fi
   elif grep_check "$current_o" "$device_right_portrait"; then
-    if [ "$request_t" == "clockwise" ]; then
+    if [ "$request_t" != "clockwise" ]; then
       set_normal
     else
       set_flipped

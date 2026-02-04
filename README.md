@@ -14,15 +14,19 @@ The base two scripts for rotation do not rely on systemd to function. Thus, it s
 
 4) Install the ```Window Monitor Pro``` extension. [GNOME extensions](https://extensions.gnome.org/extension/8549/window-monitor-pro/) | [Source code](https://github.com/dev-muhammad-adel/window-calls-extended).
 
-5) Open ```gnome-waydroid-rotator_user.sh``` and read through the comments and variables in the beginning. Ensure your screen orientation is set to normal, then set the variables to your own device's parameters.
+5) Open ```gnome-waydroid-rotator.conf``` and read through the comments. Follow the instructions to ensure that your screen orientation is set to normal, then follow the rest of the comments to set the variables to your own device's parameters.
 
-6) Move ```gnome-waydroid-rotator_root.sh``` and ```gnome-waydroid-rotator_user.sh``` to /usr/local/bin. Make them executable.
+6) Copy or move your edited ```gnome-waydroid-rotator.conf``` to /etc/.
 
-7) If using systemd, go into the folder ```systemctl_services```.
+7) Move ```gnome-waydroid-rotator_root.sh``` and ```gnome-waydroid-rotator_user.sh``` to /usr/local/bin. Make them executable.
 
-8) Move ```gnome-waydroid-rotator_root.service``` to /etc/systemd/system/. Enable and start it with systemctl via ```sudo systemctl enable --now gnom-waydroid-rotator_root```.
+8) If using systemd, go into the folder ```systemctl_services```.
 
-9) Move ```gnome-waydroid-rotator_user.service``` to ~/.config/systemd/user/. Enable and start it with systemctl via ```systemctl --user enable --now gnome-waydroid-rotator_user```.
+9) Move ```gnome-waydroid-rotator_root.service``` to /etc/systemd/system/. Enable and start it with systemctl via ```sudo systemctl enable --now gnom-waydroid-rotator_root```.
+
+10) Move ```gnome-waydroid-rotator_user.service``` to ~/.config/systemd/user/. Enable and start it with systemctl via ```systemctl --user enable --now gnome-waydroid-rotator_user```.
+
+11) [Optional] You can move ```gnome-waydroid-rotator-ctrl``` to /usr/local/bin. It is meant to be a cli tool that can manually rotate your screen using gnome-waydroid-rotator scripts.
 
 **This script was only tested on Wayland GNOME on Fedora Workstation**
 
@@ -30,11 +34,15 @@ The base two scripts for rotation do not rely on systemd to function. Thus, it s
 
 1) Assuming you set up the systemd services correctly, the services should have started automatically and auto-rotation active.
 
-2) If you want to run the scripts without systemd, disable the services. Then, run ```gnome-waydroid-rotator_root.sh``` **as root**, and ```gnome-waydroid-rotator_user.sh``` **as user**.
+2) If you want to run the scripts without systemd, you'll need to first run ```gnome-waydroid-rotator_root.sh``` **as root**, then ```gnome-waydroid-rotator_user.sh``` **as user**.
 
 3) To lock rotation, create a file ```/tmp/gwr/lock```. To disable rotation lock, remove that file.
 
-4) To enable manual rotation, first lock the rotation as above, then create a file ```/tmp/gwr/manual``` with the content of which orientation you want to manually switch to. Accepted values are the ones you set up on step 5 of the installation
+4) To enable manual rotation, first lock the rotation as above, then create a file ```/tmp/gwr/manual``` with the content of which orientation you want to manually switch to. Accepted values are the ones you set up in the first few variables of the ```gnome-waydroid-rotator.conf``` config file.
+
+  - It is simpler to use ```gnome-waydroid-ctrl``` to control manual rotation. (It can also figure out clockwise / counterclockwise rotations). Use the -h flag to get started.
+
+  - There is an argos file included in this repository; you can reference it as an example of how to use ```gnome-waydroid-ctrl```.
 
 ## background:
 
