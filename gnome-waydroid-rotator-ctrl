@@ -1,0 +1,137 @@
+#!/bin/bash
+
+# Change to your config file if necessary
+CONFIG_FILE="/etc/gnome-waydroid-rotator.conf"
+
+######################################################################
+## DO NOT MODIFY BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING ##
+######################################################################
+
+. "$CONFIG_FILE" 2> /dev/null
+
+#functions
+set_normal () {
+  touch /tmp/gwr/lock 2> /dev/null
+  echo "$device_landscape_normal" | tee /tmp/gwr/manual &> /dev/null
+}
+
+set_left_up () {
+  touch /tmp/gwr/lock 2> /dev/null
+  echo "$device_left_portrait" | tee /tmp/gwr/manual &> /dev/null
+}
+
+set_right_up () {
+  touch /tmp/gwr/lock 2> /dev/null
+  echo "$device_right_portrait" | tee /tmp/gwr/manual &> /dev/null
+}
+
+set_flipped () {
+  touch /tmp/gwr/lock 2> /dev/null
+  echo "$device_landscape_flipped" | tee /tmp/gwr/manual &> /dev/null
+}
+
+set_lock () {
+  touch /tmp/gwr/lock 2> /dev/null
+  echo "Rotation locked."
+}
+
+reset () {
+  rm /tmp/gwr/lock 2> /dev/null
+  rm /tmp/gwr/manual 2> /dev/null
+}
+
+grep_check () {
+  if [ ! -z "$(echo "$1" | grep "$2")" ]; then
+    return 0 #pretend this is false
+  else
+    return 1 #and thats true
+  fi
+}
+
+clock_turn () {
+  request_t="$1"
+  if [ -f "/tmp/gwr/manual" ]; then
+    current_o="$(cat /tmp/gwr/manual)" 2> /dev/null
+  else
+    current_o="$(cat /tmp/gwr/device_rotation | grep 'orientation:' | tail -n1)" 2> /dev/null
+  fi
+  if grep_check "$current_o" "$device_landscape_normal"; then
+    if [ "$request_t" == "clockwise" ]; then
+      set_left_up
+    else
+      set_right_up
+    fi
+  elif grep_check "$current_o" "$device_left_portrait"; then
+    if [ "$request_t" == "clockwise" ]; then
+      set_flipped
+    else
+      set_normal
+    fi
+  elif grep_check "$current_o" "$device_landscape_flipped"; then
+    if [ "$request_t" == "clockwise" ]; then
+      set_right_up
+    else
+      set_left_up
+    fi
+  elif grep_check "$current_o" "$device_right_portrait"; then
+    if [ "$request_t" == "clockwise" ]; then
+      set_normal
+    else
+      set_flipped
+    fi
+  else
+    echo "Error in clock_turn()."
+  fi
+}
+
+while [[ "$#" -gt 0 ]]; do
+  if [[ "$@" == *"-h"* || "$@" == *"--help"* || "$@" == *"help"* ]]; then #we care more about this one than the other stuff
+    echo -e "The following arguments are recognized by dynamic-profiler-ctrl:\n\n  --normal | Manually set normal orientation\n  --left | Manually set left-up orientation\n  --right | Manually set right-up orientation\n  --flipped | Manually set normal-flipped orientation\n\n  --lock | Lock rotation\n  --auto | Enable automatic rotation\n\n  --clockwise | Manually rotate clockwise\n  --counterclockwise | Manually rotate counterclockwise"
+    exit 1
+  elif [[ "$@" == *"--auto"* ]]; then
+    reset
+    echo "Automatic rotation enabled."
+    exit 1
+  fi
+  case "$1" in
+    --normal | -0)
+      shift
+      set_normal
+      shift
+      ;;
+    --left | -90)
+      shift
+      set_left_up
+      shift
+      ;;
+    --right | -270)
+      shift
+      set_right_up
+      shift
+      ;;
+    --flipped | --flip | -180)
+      shift
+      set_flipped
+      shift
+      ;;
+    --lock)
+      shift
+      set_lock
+      shift
+      ;;
+    --clockwise | -cw)
+      shift
+      clock_turn "clockwise"
+      shift
+      ;;
+    --counterclockwise | -ccw)
+      shift
+      clock_turn "counterclockwise"
+      shift
+      ;;
+    *)
+      shift
+      echo "Unidentified argument found. Use -h flag for help."
+      ;;
+   esac
+done

@@ -1,37 +1,27 @@
 #!/bin/bash
-
 # This is the part of the script meant to be run from the USER, NOT ROOT
 # You'll need this extension installed: https://github.com/dev-muhammad-adel/window-calls-extended
 # You'll also need inotify tools installed. Refer to other instructions if you don't know how to install
 # You'll also need to be using GNOME.
 
-## monitor-sensor options:
-# set the following strings to some identifiable string that indicates your device's orientation
-device_landscape_normal="normal"
-device_left_portrait="left-up"
-device_right_portrait="right-up"
-device_landscape_flipped="bottom-up"
-
-## waydroid shell rotation:
-# test these by running 'waydroid shell wm user-rotation lock $NUMBER'
-# depending on waydroid version, the above command might use set-user-rotation instead
-normal="0"
-left_up="3"
-right_up="1"
-flipped="2"
-
-## gdctl options:
-# run ```gdctl show``` to list out your monitors. Find the one that you want to control rotation for.
-# gdscale is the scaling you want to use. It is technically a float i guess, things like 1, 2, 1.25, etc.
-gdmon="eDP-1"
-gdscale=1
-
-## set to turn on debug messages
-debug_mode=1
-
 ######################################################################
 ## DO NOT MODIFY BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING ##
 ######################################################################
+
+USER_CONFIG="$1"
+if [ ! -z "$USER_CONFIG" ]; then
+  echo "User config file passed. Using config file at $USER_CONFIG"
+  if [ -f "$USER_CONFIG" ]; then
+    . "$USER_CONFIG"
+  else
+    echo "Config file not found. Exiting..."
+    exit 1
+  fi
+else
+  echo "Using default config file at /etc/dynamic-profiler.conf"
+  . /etc/gnome-waydroid-rotator.conf
+fi
+
 
 ## prevent root
 if [ "$(id -u)" == "0" ]; then
