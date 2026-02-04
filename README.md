@@ -22,11 +22,21 @@ The base two scripts for rotation do not rely on systemd to function. Thus, it s
 
 8) If using systemd, go into the folder ```systemctl_services```.
 
-9) Move ```gnome-waydroid-rotator_root.service``` to /etc/systemd/system/. Enable and start it with systemctl via ```sudo systemctl enable --now gnom-waydroid-rotator_root```.
+9) We'll first install the root services. Go into the root/ folder.
 
-10) Move ```gnome-waydroid-rotator_user.service``` to ~/.config/systemd/user/. Enable and start it with systemctl via ```systemctl --user enable --now gnome-waydroid-rotator_user```.
+10) Move ```gnome-waydroid-rotator_root.service``` to /etc/systemd/system/. Enable and start it with systemctl via ```sudo systemctl enable --now gnom-waydroid-rotator_root```.
 
-11) [Optional] You can move ```gnome-waydroid-rotator-ctrl``` to /usr/local/bin. It is meant to be a cli tool that can manually rotate your screen using gnome-waydroid-rotator scripts.
+11) Move ```suspend@.service``` to /etc/systemd/system/.
+
+12) We'll now install the user services. Go into the user/ folder in the overarching systemctl_services/ folder.
+
+13) Move ```gnome-waydroid-rotator_user.service``` to ~/.config/systemd/user/. Enable and start it with systemctl via ```systemctl --user enable --now gnome-waydroid-rotator_user```.
+
+14) Move ```suspend.target``` to ~/.config/systemd/user/.
+
+15) Optionally, (but recommended): Move ```gnome-waydroid-rotator_user-restart.service``` to ~/.config/systemd/user/. Enable it.
+
+-  [Optional] You can move ```gnome-waydroid-rotator-ctrl``` to /usr/local/bin. It is meant to be a cli tool that can manually rotate your screen using gnome-waydroid-rotator scripts.
 
 **This script was only tested on Wayland GNOME on Fedora Workstation**
 
