@@ -18,10 +18,9 @@ if [ ! -z "$USER_CONFIG" ]; then
     exit 1
   fi
 else
-  echo "Using default config file at /etc/dynamic-profiler.conf"
+  echo "Using default config file at /etc/gnome-waydroid-rotator.conf"
   . /etc/gnome-waydroid-rotator.conf
 fi
-
 
 ## prevent root
 if [ "$(id -u)" == "0" ]; then
