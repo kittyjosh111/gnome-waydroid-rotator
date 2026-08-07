@@ -8,43 +8,21 @@ The base two scripts for rotation do not rely on systemd to function. Thus, it s
 
 1) Use GNOME. I've only tested this on Wayland, but if you're on X11 then waydroid won't work natively so...
 
-2) Disable GNOME's built-in rotation. I'm not too sure how to do this, but I used the extension ```Screen Rotate``` and disabling roatation using that seemed to work. In any case, make sure not to disable iio-sensor-proxy.
+2) Install ```inotify-tools``` with your package manager.
 
-3) Install ```inotify-tools``` with your package manager.
+3) Install the ```Window Monitor Pro``` extension. [GNOME extensions](https://extensions.gnome.org/extension/8549/window-monitor-pro/) | [Source code](https://github.com/dev-muhammad-adel/window-calls-extended).
 
-4) Install the ```Window Monitor Pro``` extension. [GNOME extensions](https://extensions.gnome.org/extension/8549/window-monitor-pro/) | [Source code](https://github.com/dev-muhammad-adel/window-calls-extended).
+4) Open ```gnome-waydroid-rotator.conf``` and read through the comments. Follow the instructions to ensure that your screen orientation is set to normal, then follow the rest of the comments to set the variables to your own device's parameters.
 
-5) Open ```gnome-waydroid-rotator.conf``` and read through the comments. Follow the instructions to ensure that your screen orientation is set to normal, then follow the rest of the comments to set the variables to your own device's parameters.
 
-6) Copy or move your edited ```gnome-waydroid-rotator.conf``` to /etc/.
-
-7) Move ```gnome-waydroid-rotator_root.sh``` and ```gnome-waydroid-rotator_user.sh``` to /usr/local/bin. Make them executable.
-
-8) If using systemd, go into the folder ```systemctl_services```.
-
-9) We'll first install the root services. Go into the root/ folder.
-
-10) Move ```gnome-waydroid-rotator_root.service``` to /etc/systemd/system/. Enable and start it with systemctl via ```sudo systemctl enable --now gnom-waydroid-rotator_root```.
-
-11) Move ```suspend@.service``` to /etc/systemd/system/.
-
-12) We'll now install the user services. Go into the user/ folder in the overarching systemctl_services/ folder.
-
-13) Move ```gnome-waydroid-rotator_user.service``` to ~/.config/systemd/user/. Enable and start it with systemctl via ```systemctl --user enable --now gnome-waydroid-rotator_user```.
-
-14) Move ```suspend.target``` to ~/.config/systemd/user/.
-
-15) Optionally, (but recommended): Move ```gnome-waydroid-rotator_user-restart.service``` to ~/.config/systemd/user/. Enable it.
-
--  [Optional] You can move ```gnome-waydroid-rotator-ctrl``` to /usr/local/bin. It is meant to be a cli tool that can manually rotate your screen using gnome-waydroid-rotator scripts.
 
 **This script was only tested on Wayland GNOME on Fedora Workstation**
 
 ## usage:
 
-1) Assuming you set up the systemd services correctly, the services should have started automatically and auto-rotation active.
+1) Assuming the installer worked properly, the services should have started automatically and gnome-waydroid-rotator active (GNOME's built-in rotation disabled automatically).
 
-2) If you want to run the scripts without systemd, you'll need to first run ```gnome-waydroid-rotator_root.sh``` **as root**, then ```gnome-waydroid-rotator_user.sh``` **as user**.
+2) If you want to run the scripts manually, you'll need to first run ```gnome-waydroid-rotator_root.sh``` **as root**, then ```gnome-waydroid-rotator_user.sh``` **as user**.
 
 3) To lock rotation, create a file ```/tmp/gwr/lock```. To disable rotation lock, remove that file.
 
