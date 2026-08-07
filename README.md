@@ -14,7 +14,7 @@ The base two scripts for rotation do not rely on systemd to function. Thus, it s
 
 4) Open ```gnome-waydroid-rotator.conf``` and read through the comments. Follow the instructions to ensure that your screen orientation is set to normal, then follow the rest of the comments to set the variables to your own device's parameters.
 
-
+5) Optionally, run ```install-with-systemd.sh```. This will automatically install the scripts and use systemd services, but you can also choose to skip this step for a manual installation.
 
 **This script was only tested on Wayland GNOME on Fedora Workstation**
 

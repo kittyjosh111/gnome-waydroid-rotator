@@ -124,13 +124,12 @@ touch /tmp/gwr/tell_root 2> /dev/null #set it up for now
 
 ## pre-run checks
 echo "Starting prerun checks..."
-check_ms=0
-until [ $check_ms = 143 ]; do
-  timeout --preserve-status 2s monitor-sensor #make sure that iio is online
+check_ms=1
+until [ $check_ms = 0 ]; do
+  monitor-sensor --accel | stdbuf -oL grep orientation > /tmp/gwr/device_rotation 2>&1 &
   check_ms=$?
   sleep 1
 done
-monitor-sensor --accel | stdbuf -oL grep orientation > /tmp/gwr/device_rotation 2>&1 &
 echo "Monitoring rotation status via monitor-sensor."
 sleep 1 #let files populate
 

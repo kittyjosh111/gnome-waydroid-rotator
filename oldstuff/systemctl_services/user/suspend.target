@@ -1,4 +1,0 @@
-[Unit]
-Description=User level suspend target
-StopWhenUnneeded=yes
-Wants=gnome-waydroid-rotator_user-restart.service

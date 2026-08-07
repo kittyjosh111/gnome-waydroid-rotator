@@ -1,0 +1,12 @@
+[Unit]
+Description=Launcher for gnome-waydroid-rotator_user (user portion)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/gnome-waydroid-rotator_user.sh
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target
