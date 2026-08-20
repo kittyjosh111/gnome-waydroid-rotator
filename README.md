@@ -12,9 +12,11 @@ The base two scripts for rotation do not rely on systemd to function. Thus, it s
 
 3) Install the ```Window Monitor Pro``` extension. [GNOME extensions](https://extensions.gnome.org/extension/8549/window-monitor-pro/) | [Source code](https://github.com/dev-muhammad-adel/window-calls-extended).
 
-4) Open ```gnome-waydroid-rotator.conf``` and read through the comments. Follow the instructions to ensure that your screen orientation is set to normal, then follow the rest of the comments to set the variables to your own device's parameters.
+4) Copy ```gnome-waydroid-rotator.conf``` to /etc/. Open it and read through the comments. Follow the instructions to ensure that your screen orientation is set to normal, then follow the rest of the comments to set the variables to your own device's parameters.
 
 5) Optionally, run ```install-with-systemd.sh```. This will automatically install the scripts and use systemd services, but you can also choose to skip this step for a manual installation.
+
+6) If you want to manually install the main scripts, copy ```gnome-waydroid-rotator_user.sh``` and ```gnome-waydroid-rotator_root.sh``` to /usr/local/bin/. If you want the helper script too, copy ```gnome-waydroid-rotator-ctrl``` to /usr/local/bin/ as well. You can refer to the contents of ```install-with-systemd.sh``` as a guide.
 
 **This script was only tested on Wayland GNOME on Fedora Workstation**
 
